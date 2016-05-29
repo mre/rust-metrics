@@ -19,19 +19,21 @@ extern crate metrics
 
 ## Features
 
-- [ ] C library examples
 - [x] Gauges
 - [x] Counters
 - [x] Meters
 - [x] Console Based Reporter
 - [x] Create a more basic histogram trait and MetricValue
 - [x] Histogram support
+- [x] Graphite Reporter
+- [ ] C library collector
+- [ ] Simple shared collector interface
+- [ ] Http Collector
+- [ ] Statsd Collector
 - [ ] max,mean,sum,stdev support for the histogram
 - [ ] PostgreSQL Reporter
-- [ ] https://prometheus.io/docs/instrumenting/writing_clientlibs/
-- [x] Graphite Reporter
+- [ ] Prometheus Reporter
 - [ ] Gauge should be made generic
-- [ ] Improved testing (Matchers, for the !server macros in the carbon reporter testing)
 - [ ] Tested in Production
 
 ## License
