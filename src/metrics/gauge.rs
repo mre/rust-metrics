@@ -1,4 +1,4 @@
-use metrics::metric::{Metric, MetricValue};
+use metrics::metric::{Snapshot, MetricValue};
 use time::get_time;
 
 #[derive(Copy, Clone, Debug)]
@@ -65,7 +65,7 @@ impl Gauge for StdGauge {
     }
 }
 
-impl Metric for StdGauge {
+impl Snapshot for StdGauge {
     fn export_metric(&self) -> MetricValue {
         MetricValue::Gauge(self.snapshot())
     }

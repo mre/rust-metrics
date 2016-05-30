@@ -1,4 +1,4 @@
-use metrics::metric::Metric;
+use metrics::metric::Snapshot;
 use registry::{Registry, StdRegistry};
 use std::time::Duration;
 use std::thread;
@@ -82,7 +82,7 @@ fn handler(_: &mut Request) -> IronResult<Response> {
 
 #[cfg(test)]
 mod test {
-    use metrics::meter::{Meter, StdMeter};
+    use metrics::meter::{Snapshot, StdMeter};
     use metrics::counter::{Counter, StdCounter};
     use metrics::gauge::{Gauge, StdGauge};
     use registry::{Registry, StdRegistry};

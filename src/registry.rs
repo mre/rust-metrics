@@ -1,16 +1,16 @@
 use std::collections::HashMap;
-use metrics::metric::Metric;
+use metrics::metric::{Snapshot, MetricValue};
 use reporter::base::Reporter;
 
 pub trait Registry<'a>: Send + Sync {
     fn add_scheduled_reporter(&mut self, reporter: Box<Reporter>);
-    fn get(&'a self, name: &'a str) -> &'a Metric;
+    fn get(&'a self, name: &'a str) -> &'a Snapshot;
     fn get_metrics_names(&self) -> Vec<&str>;
-    fn insert<T: Metric + 'a>(&mut self, name: &'a str, metric: T);
+    fn insert<T: Snapshot + 'a>(&mut self, name: &'a str, metric: T);
 }
 
 pub struct StdRegistry<'a> {
-    metrics: HashMap<&'a str, Box<Metric + 'a>>,
+    metrics: HashMap<&'a str, Box<Snapshot + 'a>>,
     reporter: HashMap<&'a str, Box<Reporter>>,
 }
 
@@ -21,11 +21,11 @@ impl<'a> Registry<'a> for StdRegistry<'a> {
         self.reporter.insert(reporter_name, reporter);
     }
 
-    fn get(&'a self, name: &'a str) -> &'a Metric {
+    fn get(&'a self, name: &'a str) -> &'a Snapshot {
         &*self.metrics[name]
     }
 
-    fn insert<T: Metric + 'a>(&mut self, name: &'a str, metric: T) {
+    fn insert<T: Snapshot + 'a>(&mut self, name: &'a str, metric: T) {
         let boxed = Box::new(metric);
         self.metrics.insert(name, boxed);
     }
@@ -47,7 +47,8 @@ impl<'a> StdRegistry<'a> {
 
 #[cfg(test)]
 mod test {
-    use metrics::meter::{Meter, StdMeter};
+    use metrics::metric::Snapshot;
+    use metrics::meter::StdMeter;
     use metrics::counter::{Counter, StdCounter};
     use metrics::gauge::{Gauge, StdGauge};
     use registry::{Registry, StdRegistry};
