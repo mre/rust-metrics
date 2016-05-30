@@ -27,13 +27,10 @@ extern crate metrics
 - [x] Histogram support
 - [x] Graphite Reporter
 - [ ] C library collector
-- [ ] Simple shared collector interface
-- [ ] Http Collector
-- [ ] Statsd Collector
-- [ ] max,mean,sum,stdev support for the histogram
-- [ ] PostgreSQL Reporter
+- [ ] Collectors (http, statsd, shared memory, directory and more convient in process)
 - [ ] Prometheus Reporter
-- [ ] Gauge should be made generic
+- [ ] PostgreSQL Reporter
+- [ ] A better summary object
 - [ ] Tested in Production
 
 ## License
