@@ -1,10 +1,8 @@
 # rust-metrics
 [![Linux Status](https://travis-ci.org/posix4e/rust-metrics.svg?branch=master)](https://travis-ci.org/posix4e/rust-metrics)
 
-Metrics collection for Rust. You can easily shift between telemetry
-aggregation solutions as code without changing the code to write or
-read metrics. In theory it could be the basis of any number of metrics
-libraries.
+Metrics collection for Rust.
+
 ## Usage
 
 Add this to your `Cargo.toml`:
@@ -27,12 +25,11 @@ extern crate metrics
 - [x] Console Based Reporter
 - [x] Create a more basic histogram trait and MetricValue
 - [x] Histogram support
-- [x] Graphite reporter
-- [ ] C collector
-- [ ] JS collector
-- [ ] High overhead/Low resolution Collectors (http, statsd, shared memory, fs)
-- [In progress] Prometheus support
-- [ ] Only link in what is need in production
+- [x] Graphite Reporter
+- [ ] C library collector
+- [ ] Collectors (http, statsd, shared memory, directory and more convient in process)
+- [ ] Prometheus Reporter
+- [ ] PostgreSQL Reporter
 - [ ] A better summary object
 - [ ] Tested in Production
 
