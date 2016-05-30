@@ -1,6 +1,6 @@
 extern crate num;
 
-use metrics::metric::{Metric, MetricValue};
+use metrics::metric::{Snapshot, MetricValue};
 
 // This can be much better with a different datatype
 #[derive(Copy, Clone, Debug)]
@@ -37,7 +37,7 @@ impl Counter for StdCounter {
     }
 }
 
-impl Metric for StdCounter {
+impl Snapshot for StdCounter {
     fn export_metric(&self) -> MetricValue {
         MetricValue::Counter(self.snapshot())
     }

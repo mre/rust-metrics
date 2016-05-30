@@ -4,15 +4,16 @@ use metrics::meter::MeterSnapshot;
 /// a Metric
 use histogram::Histogram;
 
-pub trait Metric: Send + Sync {
+pub trait Snaphot {
     fn export_metric(&self) -> MetricValue;
 }
 
-impl Metric for Histogram {
+impl Snapshot for Histogram {
     fn export_metric(&self) -> MetricValue {
         MetricValue::Histogram(self.clone())
     }
 }
+
 pub enum MetricValue {
     Counter(StdCounter),
     Gauge(StdGauge),

@@ -4,9 +4,8 @@ extern crate histogram;
 extern crate iron;
 extern crate router;
 
-pub mod registry;
-
 pub mod metrics;
+pub mod registry;
 
 // Reporter libraries
 pub mod reporter;
