@@ -12,26 +12,20 @@ use histogram::Histogram;
 use time;
 use time::Timespec;
 
-use iron::{Iron, Request, Response, IronResult, AfterMiddleware, Chain};
-use iron::error::IronError;
-use iron::status;
 use router::{Router, NoRoute};
 use std::result;
 use iron;
+use iron::typemap::Key;
+use iron::prelude::*;
+use iron::status;
 
-struct Custom404;
+use promo_proto;
+use persistent::Read;
+use protobuf::Message;
+use promo_proto::MetricFamily;
 
-impl AfterMiddleware for Custom404 {
-    fn catch(&self, _: &mut Request, err: IronError) -> IronResult<Response> {
-        println!("Hitting custom 404 middleware");
-
-        if let Some(_) = err.error.downcast::<NoRoute>() {
-            Ok(Response::with((status::NotFound, "Custom 404 response")))
-        } else {
-            Err(err)
-        }
-    }
-}
+#[derive(Copy, Clone)]
+struct foo;
 
 pub struct PrometheusReporter {
     host_and_port: &'static str,
@@ -39,6 +33,8 @@ pub struct PrometheusReporter {
     registry: Arc<StdRegistry<'static>>,
     reporter_name: &'static str,
 }
+
+impl Key for foo { type Value = Arc<StdRegistry<'static>>; }
 
 impl Reporter for PrometheusReporter {
     fn get_unique_reporter_name(&self) -> &'static str {
@@ -64,20 +60,26 @@ impl PrometheusReporter {
         }
     }
 
-    pub fn start(self) -> thread::JoinHandle<()> {
+    pub fn start(self) -> thread::JoinHandle<iron::Listening> {
         thread::spawn(move || {
             let mut router = Router::new();
             router.get("/", handler);
             let mut chain = Chain::new(router);
-            chain.link_after(Custom404);
+            // The double long ARC pointer FTW!
+            chain.link_before(Read::<foo>::one(self.registry));
             // TODO -> Result<iron::Listening, iron::error::Error>
-            Iron::new(chain).http(self.host_and_port).unwrap();
+            Iron::new(chain).http(self.host_and_port).unwrap()
         })
     }
 }
 
-fn handler(_: &mut Request) -> IronResult<Response> {
-    Ok(Response::with((status::Ok, "Handling response")))
+fn handler(req: &mut Request) -> IronResult<Response> {
+    Ok(Response::with((status::Ok, ser_to_pb(req.get::<Read<foo>>().unwrap()))))
+}
+
+fn ser_to_pb(registry: Arc<Arc<StdRegistry<'static>>>) -> Vec<u8> {
+    let names = registry.get_metrics_names();
+    MetricFamily::new().write_to_bytes().unwrap()
 }
 
 #[cfg(test)]
